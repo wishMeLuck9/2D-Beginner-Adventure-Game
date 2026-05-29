@@ -1,0 +1,16 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Hud.uss" />
+    <ui:VisualElement name="hud-root" class="hud-root">
+        <ui:VisualElement class="top-row">
+            <ui:VisualElement class="health-card">
+                <ui:Label text="Health" class="caption" />
+                <ui:VisualElement class="health-track">
+                    <ui:VisualElement name="health-fill" class="health-fill" />
+                </ui:VisualElement>
+                <ui:Label name="health-label" text="5 / 5" class="health-label" />
+            </ui:VisualElement>
+            <ui:Label name="objective-label" text="Repair all broken machines and talk to the engineer." class="objective-label" />
+        </ui:VisualElement>
+        <ui:Label name="dialogue-label" text="" class="dialogue-label hidden" />
+    </ui:VisualElement>
+</ui:UXML>
