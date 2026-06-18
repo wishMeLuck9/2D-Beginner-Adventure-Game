@@ -132,16 +132,16 @@ public static class AdventureGameProjectSetup
     {
         return new SpriteSet
         {
-            Player = CreateSprite("Player", new Color(0.18f, 0.55f, 0.95f, 1f), new Color(0.95f, 0.98f, 1f, 1f), SpritePattern.Character),
-            Enemy = CreateSprite("Enemy", new Color(0.88f, 0.28f, 0.22f, 1f), new Color(0.14f, 0.13f, 0.16f, 1f), SpritePattern.Machine),
-            Npc = CreateSprite("EngineerNpc", new Color(0.95f, 0.74f, 0.22f, 1f), new Color(0.18f, 0.22f, 0.24f, 1f), SpritePattern.Character),
-            Projectile = CreateSprite("RepairProjectile", new Color(0.42f, 0.95f, 0.96f, 1f), Color.white, SpritePattern.Circle),
-            Pickup = CreateSprite("HealthCollectible", new Color(0.30f, 0.85f, 0.38f, 1f), Color.white, SpritePattern.Cross),
-            Grass = CreateSprite("GroundTile", new Color(0.24f, 0.55f, 0.34f, 1f), new Color(0.30f, 0.64f, 0.40f, 1f), SpritePattern.Tile),
-            Wall = CreateSprite("WallTile", new Color(0.33f, 0.36f, 0.38f, 1f), new Color(0.54f, 0.58f, 0.60f, 1f), SpritePattern.Tile),
-            Hazard = CreateSprite("HazardZone", new Color(0.76f, 0.20f, 0.14f, 1f), new Color(1.00f, 0.56f, 0.26f, 1f), SpritePattern.Stripes),
-            Crate = CreateSprite("Crate", new Color(0.58f, 0.39f, 0.20f, 1f), new Color(0.84f, 0.63f, 0.35f, 1f), SpritePattern.Box),
-            Flower = CreateSprite("Flower", new Color(0.86f, 0.24f, 0.55f, 1f), new Color(1.00f, 0.92f, 0.24f, 1f), SpritePattern.Circle)
+            Player = LoadSpriteOrCreate("Assets/Art/Ruby/PlayerCharacter.png", "Player", new Color(0.18f, 0.55f, 0.95f, 1f), new Color(0.95f, 0.98f, 1f, 1f), SpritePattern.Character),
+            Enemy = LoadSpriteOrCreate("Assets/Art/Ruby/Characters/Enemy.png", "Enemy", new Color(0.88f, 0.28f, 0.22f, 1f), new Color(0.14f, 0.13f, 0.16f, 1f), SpritePattern.Machine),
+            Npc = LoadSpriteOrCreate("Assets/Art/Ruby/Characters/NonPlayerCharacterSheet.png", "EngineerNpc", new Color(0.95f, 0.74f, 0.22f, 1f), new Color(0.18f, 0.22f, 0.24f, 1f), SpritePattern.Character),
+            Projectile = LoadSpriteOrCreate("Assets/Art/Ruby/VFX/Projectile.png", "RepairProjectile", new Color(0.42f, 0.95f, 0.96f, 1f), Color.white, SpritePattern.Circle),
+            Pickup = LoadSpriteOrCreate("Assets/Art/Ruby/VFX/CollectibleHealth.png", "HealthCollectible", new Color(0.30f, 0.85f, 0.38f, 1f), Color.white, SpritePattern.Cross),
+            Grass = LoadSpriteOrCreate("Assets/Art/Ruby/Tile1.png", "GroundTile", new Color(0.24f, 0.55f, 0.34f, 1f), new Color(0.30f, 0.64f, 0.40f, 1f), SpritePattern.Tile),
+            Wall = LoadSpriteOrCreate("Assets/Art/Ruby/Tile2.png", "WallTile", new Color(0.33f, 0.36f, 0.38f, 1f), new Color(0.54f, 0.58f, 0.60f, 1f), SpritePattern.Tile),
+            Hazard = LoadSpriteOrCreate("Assets/Art/Ruby/Environment/DamageZone.png", "HazardZone", new Color(0.76f, 0.20f, 0.14f, 1f), new Color(1.00f, 0.56f, 0.26f, 1f), SpritePattern.Stripes),
+            Crate = LoadSpriteOrCreate("Assets/Art/Ruby/Environment/Decoration_1.png", "Crate", new Color(0.58f, 0.39f, 0.20f, 1f), new Color(0.84f, 0.63f, 0.35f, 1f), SpritePattern.Box),
+            Flower = LoadSpriteOrCreate("Assets/Art/Ruby/Environment/Decoration_6.png", "Flower", new Color(0.86f, 0.24f, 0.55f, 1f), new Color(1.00f, 0.92f, 0.24f, 1f), SpritePattern.Circle)
         };
     }
 
@@ -250,6 +250,26 @@ public static class AdventureGameProjectSetup
         importer.SaveAndReimport();
 
         return AssetDatabase.LoadAssetAtPath<Sprite>(path);
+    }
+
+    private static Sprite LoadSpriteOrCreate(string officialPath, string fallbackName, Color baseColor, Color accentColor, SpritePattern pattern)
+    {
+        Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>(officialPath);
+        if (sprite != null)
+        {
+            return sprite;
+        }
+
+        foreach (UnityEngine.Object asset in AssetDatabase.LoadAllAssetsAtPath(officialPath))
+        {
+            if (asset is Sprite nestedSprite)
+            {
+                return nestedSprite;
+            }
+        }
+
+        Debug.LogWarning($"[2D Beginner Adventure] Missing official sprite at {officialPath}; using generated fallback {fallbackName}.");
+        return CreateSprite(fallbackName, baseColor, accentColor, pattern);
     }
 
     private static TileSet CreateTiles(SpriteSet sprites)
